@@ -21,6 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.0.0-rc2</dropwizard.version>
         <mainClass>org.zetrahytes.todoapi.TodoApiApplication</mainClass>
+        <hibernate.version>5.0.7.Final</hibernate.version>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +52,11 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-ehcache</artifactId>
+           <version>${hibernate.version}</version>
         </dependency>
     </dependencies>
 
