@@ -1,0 +1,5 @@
+name,done
+create a basic restful api using dropwizard,true
+add checkstyle,false
+add jpa and hibernate,true
+integrate swagger to generate docs,false
