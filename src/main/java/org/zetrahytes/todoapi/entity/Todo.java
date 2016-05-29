@@ -11,6 +11,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.QueryHint;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "todo")
@@ -29,7 +31,8 @@ public class Todo {
     private long id;
     private String name;
     private boolean done;
-    private Date created;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created = new Date();
     
     public Todo() {}
 

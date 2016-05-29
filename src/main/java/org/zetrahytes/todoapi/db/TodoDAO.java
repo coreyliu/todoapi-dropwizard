@@ -18,4 +18,8 @@ public class TodoDAO extends AbstractDAO<Todo>{
         return list(namedQuery("org.zetrahytes.todoapi.entity.Todo.findAllTodos"));
     }
 
+    public Todo addTodo(Todo todo) {
+        return persist(todo);
+    }
+
 }
