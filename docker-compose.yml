@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  todoapi:
+    build: .
+    image: todoapi-dropwizard
+    container_name: todoapi-dropwizard-container
+    ports:
+     - "8080:8080"
+     - "8081:8081"
