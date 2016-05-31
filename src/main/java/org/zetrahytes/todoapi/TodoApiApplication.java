@@ -2,6 +2,7 @@ package org.zetrahytes.todoapi;
 
 import org.zetrahytes.todoapi.db.TodoDAO;
 import org.zetrahytes.todoapi.entity.Todo;
+import org.zetrahytes.todoapi.resources.NotesResource;
 import org.zetrahytes.todoapi.resources.StatusResource;
 import org.zetrahytes.todoapi.resources.TodoResource;
 
@@ -59,6 +60,7 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
         
         environment.jersey().register(new StatusResource());
         environment.jersey().register(new TodoResource(todoDAO));
+        environment.jersey().register(new NotesResource());
     }
 
 }
