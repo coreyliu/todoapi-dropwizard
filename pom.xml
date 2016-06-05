@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.0.0-rc2</dropwizard.version>
+        <dropwizard.modules.version>1.0.0-rc2-1</dropwizard.modules.version>
         <mainClass>org.zetrahytes.todoapi.TodoApiApplication</mainClass>
         <hibernate.version>5.0.7.Final</hibernate.version>
     </properties>
@@ -48,6 +49,11 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-migrations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.modules</groupId>
+            <artifactId>dropwizard-elasticsearch</artifactId>
+            <version>${dropwizard.modules.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

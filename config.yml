@@ -12,3 +12,10 @@ database:
     hibernate.cache.use_second_level_cache: true,
     hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory,
     javax.persistence.sharedCache.mode: ENABLE_SELECTIVE}
+
+elasticsearch:
+  clusterName: my-elasticsearch-cluster
+  settings:
+    path.home: "/usr/local/Cellar/elasticsearch/2.1.1/libexec"
+index: notesindex
+type:  notes

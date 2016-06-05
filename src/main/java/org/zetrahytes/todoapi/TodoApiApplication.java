@@ -1,5 +1,6 @@
 package org.zetrahytes.todoapi;
 
+import org.zetrahytes.todoapi.db.ElasticsearchDAO;
 import org.zetrahytes.todoapi.db.TodoDAO;
 import org.zetrahytes.todoapi.entity.Todo;
 import org.zetrahytes.todoapi.resources.NotesResource;
@@ -10,6 +11,8 @@ import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.elasticsearch.health.EsClusterHealthCheck;
+import io.dropwizard.elasticsearch.managed.ManagedEsClient;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -56,11 +59,20 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
     @Override
     public void run(final TodoApiConfiguration configuration, final Environment environment) {
-        final TodoDAO todoDAO = new TodoDAO(hibernateBundle.getSessionFactory());
         
+        // Status resource
         environment.jersey().register(new StatusResource());
+        
+        // Todo resource
+        final TodoDAO todoDAO = new TodoDAO(hibernateBundle.getSessionFactory());
         environment.jersey().register(new TodoResource(todoDAO));
-        environment.jersey().register(new NotesResource());
+        
+        // Notes resource
+        final ManagedEsClient managedClient = new ManagedEsClient(configuration.getEsConfiguration());
+        final ElasticsearchDAO elasticsearchDAO = new ElasticsearchDAO(managedClient.getClient());
+        environment.lifecycle().manage(managedClient);
+        environment.healthChecks().register("ES cluster health", new EsClusterHealthCheck(managedClient.getClient()));
+        environment.jersey().register(new NotesResource(elasticsearchDAO, configuration.getIndex(), configuration.getType()));
     }
 
 }
