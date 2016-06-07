@@ -7,7 +7,7 @@ import io.dropwizard.elasticsearch.config.EsConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 public class TodoApiConfiguration extends Configuration {
 

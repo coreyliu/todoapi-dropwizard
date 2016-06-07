@@ -18,12 +18,12 @@ import javax.persistence.TemporalType;
 @Table(name = "todo")
 @Cacheable
 @NamedQueries({
-    @NamedQuery(
+        @NamedQuery(
             name = "org.zetrahytes.todoapi.entity.Todo.findAllTodos",
             query = "SELECT t FROM Todo t",
             hints = {@QueryHint(name = "org.hibernate.cacheable", value = "true")}
-    )
-})
+        )
+    })
 public class Todo {
 
     @Id
@@ -33,8 +33,8 @@ public class Todo {
     private boolean done;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created = new Date();
-    
-    public Todo() {}
+
+    public Todo() { }
 
     public Todo(long id, String name, boolean done, Date created) {
         this.id = id;

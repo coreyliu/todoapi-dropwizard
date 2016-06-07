@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 @Path("/status")
 public class StatusResource {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusResource.class);
-    
+
     @GET
     public String status() {
         LOGGER.info("/status endpoint got invoked");

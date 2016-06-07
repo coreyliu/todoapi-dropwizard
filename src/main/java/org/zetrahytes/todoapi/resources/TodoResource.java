@@ -33,7 +33,7 @@ public class TodoResource {
     public List<Todo> getAllTodos() {
         return todoDAO.findAllTodos();
     }
-    
+
     @POST
     @UnitOfWork
     public Todo addTodo(Todo todo) {

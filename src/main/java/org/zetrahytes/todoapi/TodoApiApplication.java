@@ -21,13 +21,13 @@ import io.dropwizard.setup.Environment;
 public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
     private final HibernateBundle<TodoApiConfiguration> hibernateBundle =
-            new HibernateBundle<TodoApiConfiguration>(Todo.class) {
-                @Override
-                public DataSourceFactory getDataSourceFactory(TodoApiConfiguration configuration) {
-                    return configuration.getDataSourceFactory();
-                }
-            };
-        
+        new HibernateBundle<TodoApiConfiguration>(Todo.class) {
+            @Override
+            public DataSourceFactory getDataSourceFactory(TodoApiConfiguration configuration) {
+                return configuration.getDataSourceFactory();
+            }
+        };
+
     public static void main(final String[] args) throws Exception {
         new TodoApiApplication().run(args);
     }
@@ -46,33 +46,34 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
                         new EnvironmentVariableSubstitutor(false)
                 )
         );
-        
+
         bootstrap.addBundle(new MigrationsBundle<TodoApiConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(TodoApiConfiguration configuration) {
                 return configuration.getDataSourceFactory();
             }
         });
-        
+
         bootstrap.addBundle(hibernateBundle);
     }
 
     @Override
     public void run(final TodoApiConfiguration configuration, final Environment environment) {
-        
+
         // Status resource
         environment.jersey().register(new StatusResource());
-        
+
         // Todo resource
         final TodoDAO todoDAO = new TodoDAO(hibernateBundle.getSessionFactory());
         environment.jersey().register(new TodoResource(todoDAO));
-        
+
         // Notes resource
         final ManagedEsClient managedClient = new ManagedEsClient(configuration.getEsConfiguration());
         final ElasticsearchDAO elasticsearchDAO = new ElasticsearchDAO(managedClient.getClient());
         environment.lifecycle().manage(managedClient);
         environment.healthChecks().register("ES cluster health", new EsClusterHealthCheck(managedClient.getClient()));
-        environment.jersey().register(new NotesResource(elasticsearchDAO, configuration.getIndex(), configuration.getType()));
+        environment.jersey().register(
+                new NotesResource(elasticsearchDAO, configuration.getIndex(), configuration.getType()));
     }
 
 }

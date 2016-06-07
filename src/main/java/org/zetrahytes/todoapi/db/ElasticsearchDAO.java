@@ -26,5 +26,5 @@ public class ElasticsearchDAO {
     public String get(String id, String index, String type) {
         GetResponse response = client.prepareGet(index, type, id).get();
         return response.getSourceAsString();
-    }    
+    }
 }

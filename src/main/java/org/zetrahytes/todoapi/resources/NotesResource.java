@@ -18,12 +18,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @Path("/notes")
 @Singleton
 public class NotesResource {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NotesResource.class);
     private final ElasticsearchDAO elasticsearchDAO;
     private final String index;
     private final String type;
-    
+
     public NotesResource(ElasticsearchDAO elasticsearchDAO, String index, String type) {
         this.elasticsearchDAO = elasticsearchDAO;
         this.index = index;
@@ -37,7 +37,7 @@ public class NotesResource {
         String noteId = elasticsearchDAO.insert(note, index, type);
         return noteId;
     }
-    
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
