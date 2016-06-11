@@ -8,7 +8,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.zetrahytes.todoapi.entity.Note;
 import org.zetrahytes.todoapi.util.Util;
 
@@ -43,12 +42,13 @@ public class ElasticsearchDAO {
                 .setQuery(QueryBuilders.termsQuery("content", searchQuery))
                 .execute()
                 .actionGet();
-        SearchHit[] hits = searchResponse.getHits().hits();
-        for (SearchHit hit : hits) {
-            String id = hit.getId();
-            String content = (String) hit.getSource().get("content");
-            searchResults.add(new Note(id, content));
-        }
+
+        searchResponse.getHits().forEach((hit) -> {
+                String id = hit.getId();
+                String content = (String) hit.getSource().get("content");
+                searchResults.add(new Note(id, content));
+            });
+
         return searchResults;
     }
 }
