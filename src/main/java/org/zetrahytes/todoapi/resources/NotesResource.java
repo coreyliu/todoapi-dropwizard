@@ -1,5 +1,7 @@
 package org.zetrahytes.todoapi.resources;
 
+import java.util.Objects;
+
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -7,7 +9,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zetrahytes.todoapi.db.ElasticsearchDAO;
@@ -46,4 +52,15 @@ public class NotesResource {
         return elasticsearchDAO.get(id, index, type);
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchNotes(@QueryParam("q") String searchQuery) {
+        LOGGER.debug("request to search notes for: {}", searchQuery);
+        if (Objects.isNull(searchQuery)) {
+            return Response.status(Status.BAD_REQUEST).entity("Missing search term").build();
+        }
+        return Response.ok(elasticsearchDAO.searchNotes(searchQuery, index, type)).build();
+    }
+
 }
+
