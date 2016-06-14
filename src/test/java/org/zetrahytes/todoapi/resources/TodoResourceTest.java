@@ -14,7 +14,6 @@ import org.zetrahytes.todoapi.entity.Todo;
 import com.google.common.collect.ImmutableList;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
-import jersey.repackaged.com.google.common.collect.Lists;
 
 import java.util.Date;
 import java.util.List;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TodoResourceTest {
 
-    private static final TodoDAO todoDAO = mock(TodoDAO.class);
+    private static final TodoDAO todoDAO = mock(TodoDAO.class); // create a stub or a mock
     @ClassRule
     public static final ResourceTestRule resources = ResourceTestRule.builder()
             .addResource(new TodoResource(todoDAO))
@@ -55,12 +54,21 @@ public class TodoResourceTest {
 
     @Test
     public void getAllTodos() {
+        // test data
         final List<Todo> todoList = ImmutableList.of(todo);
+        
+        // specify the stub value for TodoDAO:findAllTodos()
         when(todoDAO.findAllTodos()).thenReturn(todoList);
+        
+        // make a GET /todos call using jersey client
         final List<Todo> response = resources.client().target("/todos")
                 .request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<Todo>>() {});
+        
+        // verify if the call was made to the underlying mock object
         verify(todoDAO).findAllTodos();
+        
+        // check if the response matches the expected one
         assertThat(response).containsAll(todoList);
     }
 
