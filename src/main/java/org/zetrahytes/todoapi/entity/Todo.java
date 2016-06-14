@@ -1,6 +1,7 @@
 package org.zetrahytes.todoapi.entity;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -73,6 +74,28 @@ public class Todo {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Todo)) {
+            return false;
+        }
+
+        final Todo that = (Todo) o;
+
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.done, that.done)
+                && Objects.equals(this.created, that.created);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, done, created);
     }
 
 }
