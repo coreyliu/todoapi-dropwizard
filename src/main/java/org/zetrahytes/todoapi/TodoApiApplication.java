@@ -1,13 +1,20 @@
 package org.zetrahytes.todoapi;
 
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.zetrahytes.todoapi.auth.ApiAuthenticator;
+import org.zetrahytes.todoapi.auth.ApiAuthorizer;
 import org.zetrahytes.todoapi.db.ElasticsearchDAO;
 import org.zetrahytes.todoapi.db.TodoDAO;
 import org.zetrahytes.todoapi.entity.Todo;
+import org.zetrahytes.todoapi.entity.User;
 import org.zetrahytes.todoapi.resources.NotesResource;
 import org.zetrahytes.todoapi.resources.StatusResource;
 import org.zetrahytes.todoapi.resources.TodoResource;
 
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
@@ -59,6 +66,14 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
     @Override
     public void run(final TodoApiConfiguration configuration, final Environment environment) {
+
+        environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
+                .setAuthenticator(new ApiAuthenticator())
+                .setAuthorizer(new ApiAuthorizer())
+                .setRealm("TodoApiRealm")
+                .buildAuthFilter()));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
 
         // Status resource
         environment.jersey().register(new StatusResource());

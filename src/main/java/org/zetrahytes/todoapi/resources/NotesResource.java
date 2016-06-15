@@ -2,6 +2,7 @@ package org.zetrahytes.todoapi.resources;
 
 import java.util.Objects;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,8 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zetrahytes.todoapi.db.ElasticsearchDAO;
 import org.zetrahytes.todoapi.entity.Note;
+import org.zetrahytes.todoapi.entity.User;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.dropwizard.auth.Auth;
 
 @Path("/notes")
 @Singleton
@@ -36,10 +40,12 @@ public class NotesResource {
         this.type = type;
     }
 
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String addNote(Note note) throws JsonProcessingException {
+    public String addNote(@Auth User user, Note note) throws JsonProcessingException {
+        LOGGER.info("{} adding a note", user.getName());
         String noteId = elasticsearchDAO.insert(note, index, type);
         return noteId;
     }
