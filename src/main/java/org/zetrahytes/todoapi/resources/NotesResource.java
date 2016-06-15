@@ -3,6 +3,7 @@ package org.zetrahytes.todoapi.resources;
 import java.util.Objects;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -40,7 +41,7 @@ public class NotesResource {
         this.type = type;
     }
 
-    @PermitAll
+    @RolesAllowed({"ADMIN", "USER"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -50,6 +51,7 @@ public class NotesResource {
         return noteId;
     }
 
+    @PermitAll
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -58,6 +60,7 @@ public class NotesResource {
         return elasticsearchDAO.get(id, index, type);
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchNotes(@QueryParam("q") String searchQuery) {

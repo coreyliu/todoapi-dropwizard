@@ -14,14 +14,24 @@ import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
 
 public class ApiAuthenticator implements Authenticator<BasicCredentials, User> {
+    
+    /*
+     * Role-based Access Control
+     * 
+     * admin has full access (all privileges)
+     * user can get note by id, add, update and search notes
+     * guest can just get note by id
+     */
 
     private static final Map<String, String> USER_CREDENTIAL_MAPPING = ImmutableMap.of(
-            "guest", "guest",
-            "admin", "secretpwd"
+            "ram", "ramsecret",
+            "david", "davidsecret",
+            "mark", "marksecret"
         );
     private static final Map<String, Set<String>> USER_ROLES_MAPPING = ImmutableMap.of(
-            "guest", ImmutableSet.of("USER"),
-            "admin", ImmutableSet.of("ADMIN", "USER")
+            "ram", ImmutableSet.of("ADMIN"),
+            "david", ImmutableSet.of("USER"),
+            "mark", ImmutableSet.of("GUEST")
         );
 
     @Override
