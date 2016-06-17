@@ -1,27 +1,22 @@
 package org.zetrahytes.todoapi.entity;
 
 import java.security.Principal;
-import java.util.Set;
+import org.apache.shiro.subject.Subject;
 
 public class User implements Principal {
-    private final String name;
-    private final Set<String> roles;
+    // represents state and security operations for a single application user
+    private final Subject subject;
 
-    public User(String name) {
-        this.name = name;
-        this.roles = null;
-    }
-
-    public User(String name, Set<String> roles) {
-        this.name = name;
-        this.roles = roles;
+    public User(Subject subject) {
+        this.subject = subject;
     }
 
     public String getName() {
-        return name;
+        return subject.getPrincipal().toString();
     }
 
-    public Set<String> getRoles() {
-        return roles;
+    public Subject getSubject() {
+        return subject;
     }
+
 }

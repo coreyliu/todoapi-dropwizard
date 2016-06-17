@@ -1,5 +1,9 @@
 package org.zetrahytes.todoapi;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.util.Factory;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.zetrahytes.todoapi.auth.ApiAuthenticator;
 import org.zetrahytes.todoapi.auth.ApiAuthorizer;
@@ -66,6 +70,11 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
     @Override
     public void run(final TodoApiConfiguration configuration, final Environment environment) {
+
+        // initializing apache shiro
+        Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+        SecurityManager securityManager = factory.getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
 
         environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
                 .setAuthenticator(new ApiAuthenticator())
