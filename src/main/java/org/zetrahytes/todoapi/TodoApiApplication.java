@@ -12,8 +12,9 @@ import org.zetrahytes.todoapi.db.TodoDAO;
 import org.zetrahytes.todoapi.entity.Todo;
 import org.zetrahytes.todoapi.entity.User;
 import org.zetrahytes.todoapi.resources.NotesResource;
-import org.zetrahytes.todoapi.resources.StatusResource;
 import org.zetrahytes.todoapi.resources.TodoResource;
+
+import com.hubspot.dropwizard.guice.GuiceBundle;
 
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -30,6 +31,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class TodoApiApplication extends Application<TodoApiConfiguration> {
+
+    private GuiceBundle<TodoApiConfiguration> guiceBundle;
 
     private final HibernateBundle<TodoApiConfiguration> hibernateBundle =
         new HibernateBundle<TodoApiConfiguration>(Todo.class) {
@@ -50,6 +53,15 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<TodoApiConfiguration> bootstrap) {
+
+        guiceBundle = GuiceBundle.<TodoApiConfiguration>newBuilder()
+                .addModule((binder) -> { }) // don't need any guice bindings for now
+                .enableAutoConfig(getClass().getPackage().getName())
+                .setConfigClass(TodoApiConfiguration.class)
+                .build();
+
+        bootstrap.addBundle(guiceBundle);
+
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(
@@ -83,9 +95,6 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
                 .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-
-        // Status resource
-        environment.jersey().register(new StatusResource());
 
         // Todo resource
         final TodoDAO todoDAO = new TodoDAO(hibernateBundle.getSessionFactory());
