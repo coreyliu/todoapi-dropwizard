@@ -1,12 +1,13 @@
 package org.zetrahytes.todoapi.auth;
 
-import java.util.Optional;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.zetrahytes.todoapi.entity.User;
+
+import com.google.common.base.Optional;
 
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -28,7 +29,7 @@ public class ApiAuthenticator implements Authenticator<BasicCredentials, User> {
             currentUser.login(token);
             return Optional.of(new User(currentUser));
         } catch (AuthenticationException e) {
-            return Optional.empty();
+            return Optional.absent();
         }
     }
 
