@@ -8,12 +8,9 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.zetrahytes.todoapi.auth.ApiAuthenticator;
 import org.zetrahytes.todoapi.auth.ApiAuthorizer;
 import org.zetrahytes.todoapi.db.ElasticsearchDAO;
-import org.zetrahytes.todoapi.db.TodoDAO;
 import org.zetrahytes.todoapi.entity.Todo;
 import org.zetrahytes.todoapi.entity.User;
 import org.zetrahytes.todoapi.resources.NotesResource;
-import org.zetrahytes.todoapi.resources.TodoResource;
-
 import com.hubspot.dropwizard.guice.GuiceBundle;
 
 import io.dropwizard.Application;
@@ -55,7 +52,7 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
     public void initialize(final Bootstrap<TodoApiConfiguration> bootstrap) {
 
         guiceBundle = GuiceBundle.<TodoApiConfiguration>newBuilder()
-                .addModule((binder) -> { }) // don't need any guice bindings for now
+                .addModule(new TodoApiGuiceModule(hibernateBundle))
                 .enableAutoConfig(getClass().getPackage().getName())
                 .setConfigClass(TodoApiConfiguration.class)
                 .build();
@@ -95,10 +92,6 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
                 .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-
-        // Todo resource
-        final TodoDAO todoDAO = new TodoDAO(hibernateBundle.getSessionFactory());
-        environment.jersey().register(new TodoResource(todoDAO));
 
         // Notes resource
         final ManagedEsClient managedClient = new ManagedEsClient(configuration.getEsConfiguration());
