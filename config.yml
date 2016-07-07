@@ -7,15 +7,16 @@ database:
   driverClass: org.h2.Driver
   user: sa
   password: sa
-  url: jdbc:h2:./target/todoapi-dropwizard-h2db
+  url: jdbc:h2:~/todoapi-dropwizard-h2db
   properties: {hibernate.cache.use_query_cache: true,
     hibernate.cache.use_second_level_cache: true,
     hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory,
     javax.persistence.sharedCache.mode: ENABLE_SELECTIVE}
 
 elasticsearch:
+  nodeClient: false
   clusterName: my-elasticsearch-cluster
-  settings:
-    path.home: "/usr/local/Cellar/elasticsearch/2.1.1/libexec"
+  servers:
+  - 127.0.0.1:9300
 index: notesindex
 type:  notes

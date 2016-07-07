@@ -11,6 +11,8 @@ import org.zetrahytes.todoapi.db.ElasticsearchDAO;
 import org.zetrahytes.todoapi.entity.Todo;
 import org.zetrahytes.todoapi.entity.User;
 import org.zetrahytes.todoapi.resources.NotesResource;
+import org.zetrahytes.todoapi.resources.TodoResource;
+
 import com.hubspot.dropwizard.guice.GuiceBundle;
 
 import io.dropwizard.Application;
@@ -53,7 +55,6 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
 
         guiceBundle = GuiceBundle.<TodoApiConfiguration>newBuilder()
                 .addModule(new TodoApiGuiceModule(hibernateBundle))
-                .enableAutoConfig(getClass().getPackage().getName())
                 .setConfigClass(TodoApiConfiguration.class)
                 .build();
 
@@ -92,6 +93,8 @@ public class TodoApiApplication extends Application<TodoApiConfiguration> {
                 .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
+
+        environment.jersey().register(TodoResource.class);
 
         // Notes resource
         final ManagedEsClient managedClient = new ManagedEsClient(configuration.getEsConfiguration());
