@@ -16,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zetrahytes.todoapi.db.ElasticsearchDAO;
 import org.zetrahytes.todoapi.entity.Note;
 import org.zetrahytes.todoapi.entity.User;
@@ -25,12 +23,13 @@ import org.zetrahytes.todoapi.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.dropwizard.auth.Auth;
+import lombok.extern.slf4j.Slf4j;
 
 @Path("/notes")
 @Singleton
+@Slf4j
 public class NotesResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotesResource.class);
     private final ElasticsearchDAO elasticsearchDAO;
     private final String index;
     private final String type;
@@ -46,7 +45,7 @@ public class NotesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String addNote(@Auth User user, Note note) throws JsonProcessingException {
-        LOGGER.info("{} adding a note", user.getName());
+        log.info("{} adding a note", user.getName());
         String noteId = elasticsearchDAO.insert(note, index, type);
         return noteId;
     }
@@ -56,7 +55,7 @@ public class NotesResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getNote(@PathParam("id") String id) {
-        LOGGER.debug("request to get note with id: {}", id);
+        log.debug("request to get note with id: {}", id);
         return elasticsearchDAO.get(id, index, type);
     }
 
@@ -64,7 +63,7 @@ public class NotesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchNotes(@QueryParam("q") String searchQuery) {
-        LOGGER.debug("request to search notes for: {}", searchQuery);
+        log.debug("request to search notes for: {}", searchQuery);
         if (Objects.isNull(searchQuery)) {
             return Response.status(Status.BAD_REQUEST).entity("Missing search term").build();
         }
